@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_inicio"
+            android:checked="true"
+            android:icon="@drawable/ic_widgets_black_24dp"
+            android:title="@string/inicio" />
+        <item
+            android:id="@+id/nav_reservas"
+            android:icon="@drawable/ic_local_car_wash_black_24dp"
+            android:title="@string/reservas" />
+        <item
+            android:id="@+id/nav_mobiliario"
+            android:icon="@drawable/ic_weekend_black_24dp"
+            android:title="@string/mobiliario" />
+
+        <item
+            android:id="@+id/nav_faq"
+            android:icon="@drawable/ic_help_outline_black_24dp"
+            android:title="@string/faq" />
+
+        <item
+            android:id="@+id/nav_perfil"
+            android:icon="@drawable/ic_person_black_24dp"
+            android:title="@string/perfil" />
+    </group>
+
+</menu>

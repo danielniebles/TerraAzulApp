@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "716123566664",
+    "firebase_url": "https://terraazul-cd8d8.firebaseio.com",
+    "project_id": "terraazul-cd8d8",
+    "storage_bucket": "terraazul-cd8d8.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:716123566664:android:c39e84c7b2bed193",
+        "android_client_info": {
+          "package_name": "com.danielniebles.terraazulapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "716123566664-e10dp3vedvtpoof3o9ndb5i06af45me7.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.danielniebles.terraazulapp",
+            "certificate_hash": "A873DA25A13D82CB0935A7A8EF15DD40BDC3E1B2"
+          }
+        },
+        {
+          "client_id": "716123566664-5dctvrinmtu74g6kieig4at85sjrakjb.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDeEkBW4HrKTlhtW42ktfXR4j2khxhXGoc"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "716123566664-5dctvrinmtu74g6kieig4at85sjrakjb.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

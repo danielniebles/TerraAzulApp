@@ -1,0 +1,66 @@
+<resources>
+    <string name="app_name">TerraAzul</string>
+
+    <string name="inicio">Inicio</string>
+    <string name="reservas">Mis reservas</string>
+    <string name="mobiliario">Mobiliario</string>
+    <string name="perfil">Mi perfil</string>
+    <string name="faq">FAQ</string>
+
+    <string name="abierto">Open navigation drawer</string>
+    <string name="cerrado">Close navigation drawer</string>
+
+    <string name="user">Usuario</string>
+    <string name="pass">Contraseña</string>
+    <string name="repass">Repetir Contraseña</string>
+    <string name="mail">Email</string>
+    <string name="masc">Masculino</string>
+    <string name="fem">Femenino</string>
+    <string name="sexo">Ingrese el sexo: </string>
+    <string name="agregarauto">Agregar auto</string>
+    <string name="ing">Ingresar</string>
+    <string name="ing2">Continuar como invitado</string>
+
+    <string name="marca">Ingresa la marca de tu vehículo: </string>
+    <string name="placa">Ingresa la placa: </string>
+    <string name="modelo">Ingresa el modelo: </string>
+    <string name="mascotas">Viajan mascotas en el auto?</string>
+    <string name="si">Sí</string>
+    <string name="no">No</string>
+    <string name="nombreauto">Ingresa un nombre para tu auto: </string>
+    <string name="finalizar">Finalizar</string>
+
+    <string name="date">Ingresar fecha: </string>
+    <string name="ingresar">Ingresar</string>
+
+    <string name="detalles">Detalles</string>
+    <string name="cancelar">Cancelar</string>
+    <string name="aceptar">Aceptar</string>
+
+    <string name="operario">Operario: </string>
+    <string name="auto">Auto: </string>
+    <string name="fecha">Fecha: </string>
+    <string name="continuar">Continuar con otra cuenta</string>
+    <string name="register">Registrarse</string>
+
+    <string name="terra1">¿QUÉ ES TERRA AZUL?</string>
+    <string name="terra11">Somos una empresa cuyo objetivo es brindar alternativas ecológicas a ciertos servicios.
+        Nuestro fuerte actualmente es el lavado de vehículos en seco a domicilio sin el uso de agua y la filosofía de operación
+        se rige por el cuidado del medio ambiente y la comodidad de sus clientes.</string>
+    <string name="terra2">¿POR QUÉ SURGE TERRA AZUL?</string>
+    <string name="terra22">El lavado de autos es una de las actividades que más desperdicia agua en la actualidad.
+        Según la EPA (Environmental Protection Office), lavar el auto con una manguera de 5/8 pulgadas y
+        a una presión de 50 libras/pulgada^2 utiliza 10 galones/minuto de agua aproximadamente.</string>
+    <string name="terra3">¿CÓMO SURGE TERRA AZUL?</string>
+    <string name="terra33">Un grupo de emprendedores antioqueños desarrollan un ingenioso producto que permite realizar el
+        lavado de los vehículos sin usar una gota de agua, dando paso a la línea de productos Knight.
+        Cuando el arquitecto Javier Niebles, preocupado por el cuidado medio ambiente, conoce los productos Knight, aparece la idea de Terra Azul.</string>
+
+    <string name="terra4">¿POR QUÉ UNA APLICACIÓN MÓVIL?</string>
+    <string name="terra44">Pensando en la comodidad y rapidez en el servicio a sus clientes brota la idea de una aplicación móvil.
+        Según la encuesta Calidad de Vida en 2015, en el 95.6 % de los hogares colombianos al menos una persona posee teléfono celular,
+        Es decir, en 96 de cada 100 hogares colombianos hay un teléfono móvil. La empresa quiere cercanía y fácil comunicación con sus clientes y los teléfonos móviles son la tendencia en la actualidad Y además es una alternativa a la solicitud por llamada telefónica.</string>
+
+
+
+</resources>

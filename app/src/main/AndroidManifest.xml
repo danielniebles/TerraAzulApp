@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.danielniebles.terraazulapp">
+
+    <application
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:supportsRtl="true"
+        android:theme="@style/Base.AppTheme">
+        <activity android:name=".MainActivity" />
+        <activity android:name=".NavActivity" />
+        <activity android:name=".Loggin2Activity" />
+        <activity android:name=".LogginActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity android:name=".MisReservasActivity" />
+        <activity android:name=".AgregarReservaActivity" />
+        <activity android:name=".RegistroActivity" />
+        <activity android:name=".AgregarAutoActivity" />
+        <activity android:name=".MiPerfilActivity" />
+        <activity android:name=".FAQActivity" />
+        <activity android:name=".MobiliarioActivity"></activity>
+    </application>
+
+</manifest>
