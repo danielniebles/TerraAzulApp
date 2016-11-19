@@ -24,7 +24,8 @@
         <activity android:name=".AgregarAutoActivity" />
         <activity android:name=".MiPerfilActivity" />
         <activity android:name=".FAQActivity" />
-        <activity android:name=".MobiliarioActivity"></activity>
+        <activity android:name=".MobiliarioActivity" />
+        <activity android:name=".BaseActivity"></activity>
     </application>
 
 </manifest>

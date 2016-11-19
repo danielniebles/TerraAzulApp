@@ -16,12 +16,22 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
-public class NavActivity extends AppCompatActivity {
+import com.google.android.gms.auth.api.Auth;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.ResultCallback;
+import com.google.android.gms.common.api.Status;
+import com.google.firebase.auth.FirebaseAuth;
+
+public class NavActivity extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener {
 
     private DrawerLayout drawerLayout;
     private ActionBarDrawerToggle drawerToggle;
     SharedPreferences prefs;
     SharedPreferences.Editor editor;
+    private FirebaseAuth mAuth;
+    private GoogleApiClient mGoogleApiClient;
     Menu nav_menu;
 
     @Override
@@ -34,6 +44,17 @@ public class NavActivity extends AppCompatActivity {
 
         final NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         nav_menu = navigationView.getMenu();
+
+        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestIdToken(getString(R.string.default_web_client_id))
+                .requestEmail()
+                .build();
+        mGoogleApiClient = new GoogleApiClient.Builder(this)
+                .enableAutoManage(this /* FragmentActivity */, this /* OnConnectionFailedListener */)
+                .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
+                .build();
+        // [START initialize_auth]
+        mAuth = FirebaseAuth.getInstance();
 
         /*Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -79,6 +100,9 @@ public class NavActivity extends AppCompatActivity {
                         Intent intent5 = new Intent(getApplicationContext(), MiPerfilActivity.class);
                         startActivity(intent5);
                         break;
+                    case R.id.nav_cerrar:
+                        signOut();
+                        break;
                 }
                 return false;
             }
@@ -100,5 +124,23 @@ public class NavActivity extends AppCompatActivity {
                 return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void signOut() {
+        // Firebase sign out
+        mAuth.signOut();
+        // Google sign out
+        Auth.GoogleSignInApi.signOut(mGoogleApiClient).setResultCallback(
+                new ResultCallback<Status>() {
+                    @Override
+                    public void onResult(@NonNull Status status) {
+                        Intent intent6 = new Intent(getApplicationContext(), LogginActivity.class);
+                        startActivity(intent6);
+                    }
+                });
+    }
+
+    @Override
+    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
     }
 }
