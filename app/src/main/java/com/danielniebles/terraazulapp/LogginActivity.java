@@ -1,6 +1,8 @@
 package com.danielniebles.terraazulapp;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -15,6 +17,15 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.facebook.AccessToken;
+import com.facebook.CallbackManager;
+import com.facebook.FacebookCallback;
+import com.facebook.FacebookException;
+import com.facebook.FacebookSdk;
+
+import com.facebook.appevents.AppEventsLogger;
+import com.facebook.login.LoginResult;
+import com.facebook.login.widget.LoginButton;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
@@ -27,6 +38,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
@@ -35,6 +47,9 @@ public class LogginActivity extends BaseActivity implements GoogleApiClient.OnCo
                                                     View.OnClickListener{
     ImageButton bFacebook;
     TextView tContinuar;
+    SharedPreferences prefs;
+    SharedPreferences.Editor editor;
+    //Google
     private static final String TAG = "GoogleActivity";
     private static final int RC_SIGN_IN = 9001;
     // [START declare_auth]
@@ -44,22 +59,22 @@ public class LogginActivity extends BaseActivity implements GoogleApiClient.OnCo
     private FirebaseAuth.AuthStateListener mAuthListener;
     // [END declare_auth_listener]
     private GoogleApiClient mGoogleApiClient;
+    //Facebook
+    private static final String TAG2 = "FacebookLogin";
+    private CallbackManager mCallbackManager;
+    int optlog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        FacebookSdk.sdkInitialize(getApplicationContext());
+        AppEventsLogger.activateApp(this);
         setContentView(R.layout.activity_loggin);
 
-        bFacebook = (ImageButton)findViewById(R.id.bFacebook);
-        tContinuar = (TextView)findViewById(R.id.tContinuar);
+        prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        editor = prefs.edit();
 
-        bFacebook.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(getApplicationContext(), Loggin2Activity.class);
-                startActivity(intent);
-            }
-        });
+        tContinuar = (TextView)findViewById(R.id.tContinuar);
 
         tContinuar.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -103,6 +118,42 @@ public class LogginActivity extends BaseActivity implements GoogleApiClient.OnCo
             }
         };
         // [END auth_state_listener]
+
+        // [START initialize_fblogin]
+        // Initialize Facebook Login button
+        mCallbackManager = CallbackManager.Factory.create();
+        LoginButton loginButton = (LoginButton) findViewById(R.id.button_facebook_login);
+        loginButton.setReadPermissions("email", "public_profile");
+        loginButton.registerCallback(mCallbackManager, new FacebookCallback<LoginResult>() {
+            @Override
+            public void onSuccess(LoginResult loginResult) {
+                Log.d(TAG, "facebook:onSuccess:" + loginResult);
+                Toast.makeText(getApplicationContext(), "Logeado con FB", Toast.LENGTH_SHORT).show();
+                optlog = 2;
+                editor.putInt("LogID", optlog);
+                editor.commit();
+                handleFacebookAccessToken(loginResult.getAccessToken());
+            }
+
+            @Override
+            public void onCancel() {
+                Log.d(TAG, "facebook:onCancel");
+                Toast.makeText(getApplicationContext(), "Cancelado con FB", Toast.LENGTH_SHORT).show();
+                // [START_EXCLUDE]
+                updateUI(null);
+                // [END_EXCLUDE]
+            }
+
+            @Override
+            public void onError(FacebookException error) {
+                Log.d(TAG, "facebook:onError", error);
+                Toast.makeText(getApplicationContext(), "Error con FB", Toast.LENGTH_SHORT).show();
+                // [START_EXCLUDE]
+                updateUI(null);
+                // [END_EXCLUDE]
+            }
+        });
+        // [END initialize_fblogin]
     }
 
     @Override
@@ -143,20 +194,24 @@ public class LogginActivity extends BaseActivity implements GoogleApiClient.OnCo
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         // Result returned from launching the Intent from GoogleSignInApi.getSignInIntent(...);
-        if (requestCode == RC_SIGN_IN) {
-            GoogleSignInResult result = Auth.GoogleSignInApi.getSignInResultFromIntent(data);
-            if (result.isSuccess()) {
-                // Google Sign In was successful, authenticate with Firebase
-                GoogleSignInAccount account = result.getSignInAccount();
-                firebaseAuthWithGoogle(account);
-                Toast.makeText(getApplicationContext(),"HolaGood",Toast.LENGTH_SHORT).show();
-            } else {
-                // Google Sign In failed, update UI appropriately
-                // [START_EXCLUDE]
-                updateUI(null);
-                Toast.makeText(getApplicationContext(),"HolaBad",Toast.LENGTH_SHORT).show();
-                // [END_EXCLUDE]
+        if (optlog == 1) {
+            if (requestCode == RC_SIGN_IN) {
+                GoogleSignInResult result = Auth.GoogleSignInApi.getSignInResultFromIntent(data);
+                if (result.isSuccess()) {
+                    // Google Sign In was successful, authenticate with Firebase
+                    GoogleSignInAccount account = result.getSignInAccount();
+                    firebaseAuthWithGoogle(account);
+                    Toast.makeText(getApplicationContext(), "HolaGood", Toast.LENGTH_SHORT).show();
+                } else {
+                    // Google Sign In failed, update UI appropriately
+                    // [START_EXCLUDE]
+                    updateUI(null);
+                    Toast.makeText(getApplicationContext(), "HolaBad", Toast.LENGTH_SHORT).show();
+                    // [END_EXCLUDE]
+                }
             }
+        }else{
+            mCallbackManager.onActivityResult(requestCode, resultCode, data);
         }
     }
     // [END onactivityresult]
@@ -191,6 +246,9 @@ public class LogginActivity extends BaseActivity implements GoogleApiClient.OnCo
 
     // [START signin]
     private void signIn() {
+        optlog = 1;
+        editor.putInt("LogID", optlog);
+        editor.commit();
         Intent signInIntent = Auth.GoogleSignInApi.getSignInIntent(mGoogleApiClient);
         startActivityForResult(signInIntent, RC_SIGN_IN);
     }
@@ -218,4 +276,32 @@ public class LogginActivity extends BaseActivity implements GoogleApiClient.OnCo
 
         }
     }
+
+    private void handleFacebookAccessToken(AccessToken token) {
+        Log.d(TAG, "handleFacebookAccessToken:" + token);
+        // [START_EXCLUDE silent]
+        showProgressDialog();
+        // [END_EXCLUDE]
+
+        AuthCredential credential = FacebookAuthProvider.getCredential(token.getToken());
+        mAuth.signInWithCredential(credential)
+                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        Log.d(TAG, "signInWithCredential:onComplete:" + task.isSuccessful());
+                        // If sign in fails, display a message to the user. If sign in succeeds
+                        // the auth state listener will be notified and logic to handle the
+                        // signed in user can be handled in the listener.
+                        if (!task.isSuccessful()) {
+                            Log.w(TAG, "signInWithCredential", task.getException());
+                            Toast.makeText(LogginActivity.this, "Authentication failed FB.",
+                                    Toast.LENGTH_SHORT).show();
+                        }
+                        // [START_EXCLUDE]
+                        hideProgressDialog();
+                        // [END_EXCLUDE]
+                    }
+                });
+    }
+    // [END auth_with_facebook]
 }

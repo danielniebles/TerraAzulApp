@@ -16,6 +16,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
+import com.facebook.login.LoginManager;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.ConnectionResult;
@@ -32,6 +33,7 @@ public class NavActivity extends AppCompatActivity implements GoogleApiClient.On
     SharedPreferences.Editor editor;
     private FirebaseAuth mAuth;
     private GoogleApiClient mGoogleApiClient;
+    int optlog = 0;
     Menu nav_menu;
 
     @Override
@@ -68,6 +70,8 @@ public class NavActivity extends AppCompatActivity implements GoogleApiClient.On
         drawerLayout = (DrawerLayout)findViewById(R.id.contenedorPrincipal);
         drawerToggle = new ActionBarDrawerToggle(this, drawerLayout, R.string.abierto, R.string.cerrado);
         drawerLayout.setDrawerListener(drawerToggle);
+
+        optlog = prefs.getInt("LogID", -1);
 
 
         if(prefs.getInt("Invitado", -1) == 1){
@@ -129,15 +133,21 @@ public class NavActivity extends AppCompatActivity implements GoogleApiClient.On
     private void signOut() {
         // Firebase sign out
         mAuth.signOut();
-        // Google sign out
-        Auth.GoogleSignInApi.signOut(mGoogleApiClient).setResultCallback(
-                new ResultCallback<Status>() {
-                    @Override
-                    public void onResult(@NonNull Status status) {
-                        Intent intent6 = new Intent(getApplicationContext(), LogginActivity.class);
-                        startActivity(intent6);
-                    }
-                });
+        if(optlog == 1) {
+            // Google sign out
+            Auth.GoogleSignInApi.signOut(mGoogleApiClient).setResultCallback(
+                    new ResultCallback<Status>() {
+                        @Override
+                        public void onResult(@NonNull Status status) {
+                            Intent intent6 = new Intent(getApplicationContext(), LogginActivity.class);
+                            startActivity(intent6);
+                        }
+                    });
+        }else if(optlog == 2){
+            LoginManager.getInstance().logOut();
+            Intent intent6 = new Intent(getApplicationContext(), LogginActivity.class);
+            startActivity(intent6);
+        }
     }
 
     @Override
