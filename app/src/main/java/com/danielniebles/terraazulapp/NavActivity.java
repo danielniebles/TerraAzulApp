@@ -35,14 +35,14 @@ public class NavActivity extends AppCompatActivity {
         final NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         nav_menu = navigationView.getMenu();
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        /*Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         final ActionBar ab = getSupportActionBar();
         if (ab != null) {
             // Poner ícono del drawer toggle
             ab.setHomeAsUpIndicator(R.drawable.ic_menu_white_24dp);
             ab.setDisplayHomeAsUpEnabled(true);
-        }
+        }*/
 
         drawerLayout = (DrawerLayout)findViewById(R.id.contenedorPrincipal);
         drawerToggle = new ActionBarDrawerToggle(this, drawerLayout, R.string.abierto, R.string.cerrado);
