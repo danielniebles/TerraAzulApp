@@ -11,17 +11,28 @@
 
     <string name="abierto">Open navigation drawer</string>
     <string name="cerrado">Close navigation drawer</string>
+    <string name="fblogin">Inicia con Facebook</string>
 
-    <string name="user">Usuario</string>
+    <string name="user">Usuario: </string>
+    <string name="nombre">Nombre: </string>
+    <string name="marca1">Marca: </string>
+    <string name="placa1">Placa: </string>
+    <string name="modelo1">Modelo: </string>
+    <string name="mascotas1">Mascotas: </string>
+    <string name="time">Ingrese la hora: </string>
+    <string name="latitud">Latitud</string>
+    <string name="eliminar">Eliminar</string>
+    <string name="longitud">Longitud</string>
     <string name="pass">Contraseña</string>
     <string name="repass">Repetir Contraseña</string>
-    <string name="mail">Email</string>
+    <string name="mail">Email: </string>
     <string name="masc">Masculino</string>
     <string name="fem">Femenino</string>
     <string name="sexo">Ingrese el sexo: </string>
     <string name="agregarauto">Agregar auto</string>
     <string name="ing">Ingresar</string>
     <string name="ing2">Continuar como invitado</string>
+
 
     <string name="marca">Ingresa la marca de tu vehículo: </string>
     <string name="placa">Ingresa la placa: </string>
@@ -64,10 +75,10 @@
         Es decir, en 96 de cada 100 hogares colombianos hay un teléfono móvil. La empresa quiere cercanía y fácil comunicación con sus clientes y los teléfonos móviles son la tendencia en la actualidad Y además es una alternativa a la solicitud por llamada telefónica.</string>
 
     <string name="action_settings">Settings</string>
-    <string name="action_add_favourite">Add to Favourites</string>
+    <string name="action_add_favourite">Ir a la noticia</string>
     <string name="action_play_next">Play Next</string>
-    <string name="backdrop_title">LOVE MUSIC</string>
-    <string name="backdrop_subtitle">This season top 20 albums</string>
+    <string name="backdrop_title">TERRA AZUL</string>
+    <string name="backdrop_subtitle">Comprometidos con el ambiente</string>
 
     <!--Strings del login-->
 
@@ -127,5 +138,6 @@
 
     <string name="id_fmt">User ID: %s</string>
     <string name="email_fmt">Email: %s</string>
+    <string name="title_activity_maps">Map</string>
 
 </resources>

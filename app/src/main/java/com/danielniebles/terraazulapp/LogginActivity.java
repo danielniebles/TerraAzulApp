@@ -36,6 +36,7 @@ import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.common.api.Status;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FacebookAuthProvider;
@@ -52,16 +53,14 @@ public class LogginActivity extends BaseActivity implements GoogleApiClient.OnCo
     //Google
     private static final String TAG = "GoogleActivity";
     private static final int RC_SIGN_IN = 9001;
-    // [START declare_auth]
     private FirebaseAuth mAuth;
-    // [END declare_auth]
-    // [START declare_auth_listener]
     private FirebaseAuth.AuthStateListener mAuthListener;
-    // [END declare_auth_listener]
     private GoogleApiClient mGoogleApiClient;
+    String gnombre, gapellido, gurlimagen, gemail;
     //Facebook
     private static final String TAG2 = "FacebookLogin";
     private CallbackManager mCallbackManager;
+    private FirebaseAnalytics mFirebaseAnalytics;
     int optlog;
 
     @Override
@@ -118,6 +117,9 @@ public class LogginActivity extends BaseActivity implements GoogleApiClient.OnCo
             }
         };
         // [END auth_state_listener]
+
+        /*mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
+        mFirebaseAnalytics.setUserProperty("Direccion", "Calle29A");*/
 
         // [START initialize_fblogin]
         // Initialize Facebook Login button
@@ -200,8 +202,9 @@ public class LogginActivity extends BaseActivity implements GoogleApiClient.OnCo
                 if (result.isSuccess()) {
                     // Google Sign In was successful, authenticate with Firebase
                     GoogleSignInAccount account = result.getSignInAccount();
+                    gnombre = account.getGivenName();
                     firebaseAuthWithGoogle(account);
-                    Toast.makeText(getApplicationContext(), "HolaGood", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), gnombre, Toast.LENGTH_SHORT).show();
                 } else {
                     // Google Sign In failed, update UI appropriately
                     // [START_EXCLUDE]
@@ -272,6 +275,7 @@ public class LogginActivity extends BaseActivity implements GoogleApiClient.OnCo
         if (user != null) {
             Intent intent = new Intent(getApplicationContext(), MainActivity.class);
             startActivity(intent);
+            finish();
         } else {
 
         }

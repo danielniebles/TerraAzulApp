@@ -10,9 +10,9 @@ public class Carro {
     private String marca;
     private String modelo;
     private String placa;
-    private boolean mascotas;
+    private String mascotas;
 
-    public Carro(String nombre, String marca, String modelo, String placa, boolean mascotas) {
+    public Carro(String nombre, String marca, String modelo, String placa, String mascotas) {
         this.nombre = nombre;
         this.marca = marca;
         this.modelo = modelo;
@@ -52,11 +52,11 @@ public class Carro {
         this.placa = placa;
     }
 
-    public boolean isMascotas() {
+    public String getMascotas() {
         return mascotas;
     }
 
-    public void setMascotas(boolean mascotas) {
+    public void setMascotas(String mascotas) {
         this.mascotas = mascotas;
     }
 }

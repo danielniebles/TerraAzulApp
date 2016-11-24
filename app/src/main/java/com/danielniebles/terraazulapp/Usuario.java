@@ -7,28 +7,57 @@ import java.util.ArrayList;
  */
 
 public class Usuario {
-    private String usuario;
-    private String contraseña;
-    private String mail;
-    private String sexo;
+    private String uid, nombre, correo, urlphoto;
+    //private int numCarros;
     private ArrayList<Carro> carros;
-    private int id;
 
-    public Usuario(String usuario, String contraseña, String mail, String sexo, ArrayList<Carro> carros, int id) {
-        this.usuario = usuario;
-        this.contraseña = contraseña;
-        this.mail = mail;
-        this.sexo = sexo;
+    public Usuario(String uid, String nombre, String correo, String urlphoto, ArrayList<Carro> carros /*int numCarros*/) {
+        this.uid = uid;
+        this.nombre = nombre;
+        this.correo = correo;
+        this.urlphoto = urlphoto;
         this.carros = carros;
-        this.id = id;
+        //this.numCarros = numCarros;
     }
 
-    public int getId() {
-        return id;
+    /*public int getNumCarros() {
+        return numCarros;
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public void setNumCarros(int numCarros) {
+        this.numCarros = numCarros;
+    }*/
+
+    public String getUid() {
+        return uid;
+    }
+
+    public void setUid(String uid) {
+        this.uid = uid;
+    }
+
+    public String getNombre() {
+        return nombre;
+    }
+
+    public void setNombre(String nombre) {
+        this.nombre = nombre;
+    }
+
+    public String getCorreo() {
+        return correo;
+    }
+
+    public void setCorreo(String correo) {
+        this.correo = correo;
+    }
+
+    public String getUrlphoto() {
+        return urlphoto;
+    }
+
+    public void setUrlphoto(String urlphoto) {
+        this.urlphoto = urlphoto;
     }
 
     public ArrayList<Carro> getCarros() {
@@ -38,38 +67,4 @@ public class Usuario {
     public void setCarros(ArrayList<Carro> carros) {
         this.carros = carros;
     }
-
-    public String getUsuario() {
-        return usuario;
-    }
-
-    public void setUsuario(String usuario) {
-        this.usuario = usuario;
-    }
-
-    public String getContraseña() {
-        return contraseña;
-    }
-
-    public void setContraseña(String contraseña) {
-        this.contraseña = contraseña;
-    }
-
-    public String getMail() {
-        return mail;
-    }
-
-    public void setMail(String mail) {
-        this.mail = mail;
-    }
-
-    public String getSexo() {
-        return sexo;
-    }
-
-    public void setSexo(String sexo) {
-        this.sexo = sexo;
-    }
-
-
 }

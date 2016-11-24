@@ -2,6 +2,7 @@ package com.danielniebles.terraazulapp;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
@@ -15,6 +16,9 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.facebook.login.LoginManager;
 import com.google.android.gms.auth.api.Auth;
@@ -23,7 +27,12 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.common.api.Status;
+import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.UserProfileChangeRequest;
+import com.mikhaellopez.circularimageview.CircularImageView;
+import com.squareup.picasso.Picasso;
 
 public class NavActivity extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener {
 
@@ -35,6 +44,13 @@ public class NavActivity extends AppCompatActivity implements GoogleApiClient.On
     private GoogleApiClient mGoogleApiClient;
     int optlog = 0;
     Menu nav_menu;
+    FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+    String name, email;
+    Uri photo;
+    //ImageView profilephoto;
+    CircularImageView profilephoto;
+    TextView tNombren, tMailn;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,27 +74,27 @@ public class NavActivity extends AppCompatActivity implements GoogleApiClient.On
         // [START initialize_auth]
         mAuth = FirebaseAuth.getInstance();
 
-        /*Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-        final ActionBar ab = getSupportActionBar();
-        if (ab != null) {
-            // Poner ícono del drawer toggle
-            ab.setHomeAsUpIndicator(R.drawable.ic_menu_white_24dp);
-            ab.setDisplayHomeAsUpEnabled(true);
-        }*/
-
         drawerLayout = (DrawerLayout)findViewById(R.id.contenedorPrincipal);
         drawerToggle = new ActionBarDrawerToggle(this, drawerLayout, R.string.abierto, R.string.cerrado);
         drawerLayout.setDrawerListener(drawerToggle);
 
         optlog = prefs.getInt("LogID", -1);
 
-
-        if(prefs.getInt("Invitado", -1) == 1){
-            nav_menu.getItem(R.id.nav_reservas).setVisible(false);
-        }
-
         View header = navigationView.getHeaderView(0);
+
+        profilephoto = (CircularImageView)header.findViewById(R.id.imagend);
+        tNombren = (TextView)header.findViewById(R.id.tNombren);
+        tMailn = (TextView)header.findViewById(R.id.tMailn);
+
+        name = user.getDisplayName();
+        email = user.getEmail();
+        tMailn.setText(email);
+        tNombren.setText(name);
+        photo = user.getPhotoUrl();
+
+        //Toast.makeText(getApplicationContext(), photo.toString().replace("100x100", "400x400"), Toast.LENGTH_LONG).show();
+        Picasso.with(getApplicationContext()).load(photo.toString()).into(profilephoto);
+
 
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override

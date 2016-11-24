@@ -3,11 +3,11 @@ package com.danielniebles.terraazulapp;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.Rect;
+import android.net.Uri;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.ActionBar;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.GridLayoutManager;
@@ -17,8 +17,15 @@ import android.util.TypedValue;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.firebase.client.DataSnapshot;
+import com.firebase.client.Firebase;
+import com.firebase.client.FirebaseError;
+import com.firebase.client.ValueEventListener;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,8 +34,22 @@ public class MainActivity extends NavActivity {
 
     FloatingActionButton fab1;
     private RecyclerView recyclerView;
-    private AlbumsAdapter adapter;
-    private List<album> albumList;
+    private WebsAdapter adapter;
+    private List<Webs> websList;
+    private ArrayList<Carro> carros = new ArrayList<Carro>();
+    private static final String FIREBASE_URL="https://terraazul-cd8d8.firebaseio.com/";
+    //Usuario actual
+    FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+    String name, email, UID, photo;
+    private Firebase firebasedatos;
+    int position = 0;
+    long numero;
+    private String[] titulo = new String[2];
+    private String[] URLIm = new String[2];
+    private String[] descripcion = new String[2];
+    boolean created = false;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -36,6 +57,15 @@ public class MainActivity extends NavActivity {
 
         FrameLayout contentFrameLayout = (FrameLayout) findViewById(R.id.contenedorFrame); //Remember this is the FrameLayout area within your activity_main.xml
         getLayoutInflater().inflate(R.layout.activity_main, contentFrameLayout);
+
+        Firebase.setAndroidContext(this);
+        firebasedatos = new Firebase(FIREBASE_URL);
+
+        //Guardar usuario en Firebase
+        UID = user.getUid();
+        name = user.getDisplayName();
+        email = user.getEmail();
+        photo = user.getPhotoUrl().toString();
 
         fab1 = (FloatingActionButton)findViewById(R.id.fab1);
 
@@ -60,9 +90,8 @@ public class MainActivity extends NavActivity {
         initCollapsingToolbar();
 
         recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
-
-        albumList = new ArrayList<>();
-        adapter = new AlbumsAdapter(this, albumList);
+        websList = new ArrayList<>();
+        adapter = new WebsAdapter(this, websList);
 
         RecyclerView.LayoutManager mLayoutManager = new GridLayoutManager(this, 1);
         recyclerView.setLayoutManager(mLayoutManager);
@@ -70,10 +99,35 @@ public class MainActivity extends NavActivity {
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setAdapter(adapter);
 
-        prepareAlbums();
+
+        firebasedatos.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if(!dataSnapshot.child("Usuarios").child(UID).exists()){
+                    Usuario usuario = new Usuario(UID, name, email, photo, carros);
+                    firebasedatos.child("Usuarios").child(UID).setValue(usuario);
+
+
+                }
+                /*numero = dataSnapshot.child("Usuarios").child(UID).child("Carros").getChildrenCount();
+                Toast.makeText(getApplicationContext(), Long.toString(numero), Toast.LENGTH_LONG).show();*/
+                //Llenar el cardview con los ítems de Firebase
+                for(int i = 0; i<=1;i++){
+                    if(dataSnapshot.child("Noticias").child("noticia"+i).exists()){
+                        titulo[i] = dataSnapshot.child("Noticias").child("noticia"+i).child("Titulo").getValue().toString();
+                        descripcion[i] = dataSnapshot.child("Noticias").child("noticia"+i).child("Descripcion").getValue().toString();
+                        //Toast.makeText(getApplicationContext(),titulo, Toast.LENGTH_SHORT).show();
+                        URLIm[i] = dataSnapshot.child("Noticias").child("noticia"+i).child("URLIm").getValue().toString();
+                    }
+                }
+                prepareWebs();
+            }
+            @Override
+            public void onCancelled(FirebaseError firebaseError) {   }
+        });
 
         try {
-            Glide.with(this).load(R.drawable.cover).into((ImageView) findViewById(R.id.backdrop));
+            Glide.with(this).load(R.drawable.terracover).into((ImageView) findViewById(R.id.backdrop));
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -97,7 +151,7 @@ public class MainActivity extends NavActivity {
                     scrollRange = appBarLayout.getTotalScrollRange();
                 }
                 if (scrollRange + verticalOffset == 0) {
-                    collapsingToolbar.setTitle(getString(R.string.app_name));
+                    collapsingToolbar.setTitle("Noticias");
                     isShow = true;
                 } else if (isShow) {
                     collapsingToolbar.setTitle(" ");
@@ -106,50 +160,22 @@ public class MainActivity extends NavActivity {
             }
         });
     }
+    private void prepareWebs() {
 
-    private void prepareAlbums() {
-        int[] covers = new int[]{
-                R.drawable.album1,
-                R.drawable.album2,
-                R.drawable.album3,
-                R.drawable.album4,
-                R.drawable.album5,
-                R.drawable.album6,
-                R.drawable.album7,
-                R.drawable.album8,
-                R.drawable.album9,
-                R.drawable.album10,
-                R.drawable.album11};
-
-        album a = new album("True Romance", 13, covers[0]);
-        albumList.add(a);
-
-        a = new album("Xscpae", 8, covers[1]);
-        albumList.add(a);
-
-        a = new album("Maroon 5", 11, covers[2]);
-        albumList.add(a);
-
-        a = new album("Born to Die", 12, covers[3]);
-        albumList.add(a);
-
-        a = new album("Honeymoon", 14, covers[4]);
-        albumList.add(a);
-
-        a = new album("I Need a Doctor", 1, covers[5]);
-        albumList.add(a);
-
-        a = new album("Loud", 11, covers[6]);
-        albumList.add(a);
-
-        a = new album("Legend", 14, covers[7]);
-        albumList.add(a);
-
-        a = new album("Hello", 11, covers[8]);
-        albumList.add(a);
-
-        a = new album("Greatest Hits", 17, covers[9]);
-        albumList.add(a);
+        if(created == false){
+            Webs a = new Webs(titulo[0], URLIm[0], descripcion[0]);
+            websList.add(a);
+            a = new Webs(titulo[1], URLIm[1], descripcion[1]);
+            websList.add(a);
+            created = true;
+        }else{
+            websList.get(0).setName(titulo[0]);
+            websList.get(0).setThumbnail(URLIm[0]);
+            websList.get(0).setDescripcion(descripcion[0]);
+            websList.get(1).setName(titulo[1]);
+            websList.get(1).setThumbnail(URLIm[1]);
+            websList.get(1).setDescripcion(descripcion[1]);
+        }
 
         adapter.notifyDataSetChanged();
     }

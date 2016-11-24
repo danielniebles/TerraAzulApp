@@ -95,7 +95,7 @@ public class RegistroActivity extends AppCompatActivity {
                 contraseña = ePass.getText().toString();
                 mail = eMail.getText().toString();
 
-                Usuario user = new Usuario(usuario, contraseña, mail, sexo, autos, id);
+                Usuario user = new Usuario(usuario, contraseña, mail, sexo, autos);
                 firebd = firebasedata.child("Usuarios").child("usuario"+id);
                 firebd.setValue(user);
                 id++;

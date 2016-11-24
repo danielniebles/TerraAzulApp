@@ -6,6 +6,7 @@ import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.ScrollingTabContainerView;
+import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -13,11 +14,14 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RadioGroup;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
 import com.firebase.client.ValueEventListener;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,13 +31,14 @@ public class AgregarAutoActivity extends AppCompatActivity {
 
     Spinner sMarca;
     Button bFinalizar;
-    String usuario, contraseña, mail, sexo, nombre, marca, modelo, placa;
+    String usuario, contraseña, mail, sexo, nombre, marca, modelo, placa, mascotas;
     EditText ePlaca1, ePlaca2, eModelo, eNombreauto;
     RadioGroup rdgGroup2;
-    int id;
-    boolean mascotas;
+    int carros;
     private String FIREBASE_URL="https://terraazul-cd8d8.firebaseio.com/";
     private Firebase firebasedata;
+    FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+    String UID;
     ArrayList<Carro> autos = new ArrayList<>();
     SharedPreferences prefs;
     SharedPreferences.Editor editor;
@@ -46,8 +51,14 @@ public class AgregarAutoActivity extends AppCompatActivity {
 
         Firebase.setAndroidContext(this);
         firebasedata = new Firebase(FIREBASE_URL);
+        UID = user.getUid();
+
         prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
         editor = prefs.edit();
+
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar8);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setTitle("Agregar auto");
 
         ePlaca1 = (EditText)findViewById(R.id.ePlaca1);
         ePlaca2 = (EditText)findViewById(R.id.ePlaca2);
@@ -69,6 +80,24 @@ public class AgregarAutoActivity extends AppCompatActivity {
         arrayAdapter.setDropDownViewResource(R.layout.support_simple_spinner_dropdown_item);
         sMarca.setAdapter(arrayAdapter);
 
+        firebasedata.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                    //String carros1 = dataSnapshot.child("Usuarios").child(UID).child("numCarros").getValue().toString();
+                if(dataSnapshot.child("Usuarios").child(UID).child("Carros").exists()){
+                    carros = (int)dataSnapshot.child("Usuarios").child(UID).child("Carros").getChildrenCount();
+                }else{
+                    carros = 0;
+                }
+
+            }
+
+            @Override
+            public void onCancelled(FirebaseError firebaseError) {
+
+            }
+        });
+
         sMarca.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -81,78 +110,29 @@ public class AgregarAutoActivity extends AppCompatActivity {
             }
         });
 
-        Bundle extras = getIntent().getExtras();
-
-        if (extras != null){
-            usuario = extras.getString("user");
-            contraseña = extras.getString("pass");
-            mail = extras.getString("email");
-            sexo = extras.getString("sexo");
-
-            //Consulta inicial de usuarios registrados
-            firebasedata.addValueEventListener(new ValueEventListener() {
-                @Override
-                public void onDataChange(DataSnapshot dataSnapshot) {
-                    if(dataSnapshot.child("Total").exists()){
-                        id = Integer.parseInt(dataSnapshot.child("Total").getValue().toString());
-                    }
-                }
-                @Override
-                public void onCancelled(FirebaseError firebaseError) {
-                }
-            });
-            flag = true;
-        }else{
-
-        }
-
         bFinalizar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-                Firebase firebd;
                 int a = rdgGroup2.getCheckedRadioButtonId();
                 switch (a){
                     case R.id.rSi:
-                        mascotas = true;
+                        mascotas = "Sí";
                         break;
                     case R.id.rNo:
-                        mascotas = false;
+                        mascotas = "No";
                         break;
                 }
-
                 nombre = eNombreauto.getText().toString();
                 modelo = eModelo.getText().toString();
                 placa = ePlaca1.getText().toString()+"-"+ePlaca2.getText().toString();
 
-                if(flag == true){
-                    Carro carro = new Carro(nombre, marca, modelo, placa, mascotas);
-                    autos.add(carro);
-
-                    Usuario user = new Usuario(usuario, contraseña, mail, sexo, autos, id);
-                    firebd = firebasedata.child("Usuarios").child("usuario"+id);
-                    firebd.setValue(user);
-
-                    editor.putInt("id",id);
-                    editor.commit();
-                    id++;
-                    firebd = firebasedata.child("Total");
-                    firebd.setValue(id);
-
-                    Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-                    startActivity(intent);
-                }else{
-
-                }
-
-
-
+                Carro carro = new Carro(nombre, marca, modelo, placa, mascotas);
+                firebasedata.child("Usuarios").child(UID).child("Carros").child(Integer.toString(carros)).setValue(carro);
+                /*carros = carros + 1;
+                firebasedata.child("Usuarios").child(UID).child("numCarros").setValue(carros);*/
+                finish();
             }
         });
-
-
-
-
 
     }
 }
