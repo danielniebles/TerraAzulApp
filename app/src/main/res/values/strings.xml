@@ -20,6 +20,12 @@
     <string name="modelo1">Modelo: </string>
     <string name="mascotas1">Mascotas: </string>
     <string name="time">Ingrese la hora: </string>
+    <string name="direccion">Dirección del servicio: </string>
+    <string name="direccion1">Ciudad: </string>
+    <string name="direccion4">Ciudad</string>
+    <string name="direccion2">Direccion</string>
+    <string name="direccion5">Direccion: </string>
+    <string name="direccionejm">Ejemplo: Calle 29A #53-58, Bello</string>
     <string name="latitud">Latitud</string>
     <string name="eliminar">Eliminar</string>
     <string name="longitud">Longitud</string>

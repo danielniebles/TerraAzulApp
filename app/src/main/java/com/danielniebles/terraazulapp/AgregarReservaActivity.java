@@ -2,9 +2,13 @@ package com.danielniebles.terraazulapp;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.location.Address;
+import android.location.Geocoder;
 import android.os.Build;
 import android.preference.PreferenceManager;
 import android.support.annotation.RequiresApi;
@@ -26,6 +30,7 @@ import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
 import com.firebase.client.ValueEventListener;
+import com.google.android.gms.maps.model.LatLng;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
@@ -41,10 +46,11 @@ public class AgregarReservaActivity extends AppCompatActivity {
     private String FIREBASE_URL="https://terraazul-cd8d8.firebaseio.com/";
     private Firebase firebasedata;
     Button bAceptar;
+    boolean flag = false;
     TimePicker timeHour;
     String usuario, horaCita;
     double latitud, longitud;
-    EditText eLatitud, eLongitud;
+    EditText eDireccion, eCiudad;
     ArrayList<Citas> arrayCitas = new ArrayList<Citas>();
     int numCitas;
     FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
@@ -59,13 +65,13 @@ public class AgregarReservaActivity extends AppCompatActivity {
         UID = user.getUid();
 
         timeHour = (TimePicker) findViewById(R.id.timeHour);
-        eLatitud = (EditText) findViewById(R.id.eLatitud);
-        eLongitud = (EditText) findViewById(R.id.eLongitud);
+        eDireccion = (EditText) findViewById(R.id.eDireccion);
+        eCiudad = (EditText) findViewById(R.id.eCiudad);
         bAceptar = (Button)findViewById(R.id.bAceptar);
 
         //Ubicacion de la universidad
-        eLatitud.setText(String.valueOf(6.267768));
-        eLongitud.setText(String.valueOf(-75.568720));
+        /*eLatitud.setText(String.valueOf(6.267768));
+        eLongitud.setText(String.valueOf(-75.568720));*/
 
         Firebase.setAndroidContext(this);
         firebasedata = new Firebase(FIREBASE_URL);
@@ -101,17 +107,35 @@ public class AgregarReservaActivity extends AppCompatActivity {
                 hora = timeHour.getCurrentHour();
                 minutos = timeHour.getCurrentMinute();
 
-                horaCita = String.valueOf(hora)+":"+String.valueOf(minutos);
+                if (minutos<10){
+                    horaCita = String.valueOf(hora)+":0"+String.valueOf(minutos);
+                }else{
+                    horaCita = String.valueOf(hora)+":"+String.valueOf(minutos);
+                }
 
-                latitud = Double.parseDouble(eLatitud.getText().toString());
-                longitud = Double.parseDouble(eLongitud.getText().toString());
+                LatLng prueba = getLocationFromAddress(getApplicationContext(), eDireccion.getText().toString()+", "+
+                        eCiudad.getText().toString()+", Colombia");
+
+                //if(prueba == null){
+                    //flag = true;
+                    //Toast.makeText(getApplicationContext(), "Error de conexión. Intenta de nuevo", Toast.LENGTH_SHORT).show();
+                //}else{
+                    latitud = prueba.latitude;
+                    longitud = prueba.longitude;
+                //}
+
+                /*latitud = Double.parseDouble(eLatitud.getText().toString());
+                longitud = Double.parseDouble(eLongitud.getText().toString());*/
 
                 if(TextUtils.isEmpty(fecha)){
                     Toast.makeText(getApplicationContext(), "Ingrese la fecha", Toast.LENGTH_SHORT).show();
+                    //flag = false;
                 }else{
-                    Citas cita = new Citas(fecha.toString(), horaCita, latitud, longitud, UID);
-                    firebasedata.child("Citas").child(Integer.toString(numCitas)).setValue(cita);
-                    finish();
+                    //if(!flag==true){
+                        Citas cita = new Citas(fecha.toString(), horaCita, latitud, longitud, UID, eDireccion.getText().toString());
+                        firebasedata.child("Citas").child(Integer.toString(numCitas)).setValue(cita);
+                        finish();
+                    //}
                 }
             }
         });
@@ -139,6 +163,31 @@ public class AgregarReservaActivity extends AppCompatActivity {
     private void showDate(int año, int mes, int dia){
         fecha = new StringBuilder().append(dia).append("/").append(mes).append("/")
                 .append(año);
+    }
+
+    public LatLng getLocationFromAddress(Context context, String strAddress) {
+
+        Geocoder coder = new Geocoder(context);
+        List<Address> address;
+        LatLng p1 = null;
+
+        try {
+            address = coder.getFromLocationName(strAddress, 5);
+            if (address == null) {
+                return null;
+            }
+            Address location = address.get(0);
+            location.getLatitude();
+            location.getLongitude();
+
+            p1 = new LatLng(location.getLatitude(), location.getLongitude() );
+
+        } catch (Exception ex) {
+
+            ex.printStackTrace();
+        }
+
+        return p1;
     }
 
 }

@@ -89,10 +89,11 @@ public class MisReservasActivity extends NavActivity{
                     if(dataSnapshot.child("Citas").child(Integer.toString(i)).exists()){
                         String fecha = dataSnapshot.child("Citas").child(Integer.toString(i)).child("fecha").getValue().toString();
                         String hora = dataSnapshot.child("Citas").child(Integer.toString(i)).child("hora").getValue().toString();
+                        String direccion = dataSnapshot.child("Citas").child(Integer.toString(i)).child("direccion").getValue().toString();
                         double latitud = Double.valueOf(dataSnapshot.child("Citas").child(Integer.toString(i)).child("latitud").getValue().toString());
                         double longitud = Double.valueOf(dataSnapshot.child("Citas").child(Integer.toString(i)).child("longitud").getValue().toString());
                         String operario = dataSnapshot.child("Citas").child(Integer.toString(i)).child("uid").getValue().toString();
-                        Citas cita = new Citas(fecha, hora, latitud, longitud, operario);
+                        Citas cita = new Citas(fecha, hora, latitud, longitud, operario, direccion);
                         citas.add(cita);
                     }
                 }
@@ -124,11 +125,13 @@ public class MisReservasActivity extends NavActivity{
             TextView operario = (TextView)item.findViewById(R.id.tOperario);
             TextView auto = (TextView)item.findViewById(R.id.tAuto);
             TextView fecha = (TextView)item.findViewById(R.id.tFecha);
+            TextView direccion = (TextView)item.findViewById(R.id.tDireccion1);
             ImageView imagen = (ImageView)item.findViewById(R.id.imagenreserva);
 
             operario.setText("Daniel");
             auto.setText("Mi Auto");
             fecha.setText((citas.get(position)).getFecha()+" a las "+citas.get(position).getHora());
+            direccion.setText(citas.get(position).getDireccion());
             imagen.setImageResource(R.drawable.hoja);
 
             bCancelar = (Button)item.findViewById(R.id.bCancelar);
@@ -138,6 +141,7 @@ public class MisReservasActivity extends NavActivity{
                 @Override
                 public void onClick(View v) {
                     Intent intent2 = new Intent(getApplicationContext(), MapsActivity.class);
+                    intent2.putExtra("indice", String.valueOf(position));
                     startActivity(intent2);
                 }
             });

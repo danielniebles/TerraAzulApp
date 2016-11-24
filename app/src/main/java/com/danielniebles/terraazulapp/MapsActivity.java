@@ -1,9 +1,13 @@
 package com.danielniebles.terraazulapp;
 
+import android.content.Context;
 import android.content.pm.PackageManager;
+import android.location.Address;
+import android.location.Geocoder;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
+import android.widget.Toast;
 
 import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
@@ -18,18 +22,32 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import java.util.List;
+
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
 
     private GoogleMap mMap;
     private String FIREBASE_URL="https://terraazul-cd8d8.firebaseio.com/";
     private Firebase firebasedata;
     double Latitud, Longitud;
+    double Latitudcita, Longitudcita;
+    String indice, hora;
     String nombre;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
+
+        Bundle extras = getIntent().getExtras();
+        Toast.makeText(getApplicationContext(),"Me metí a maps", Toast.LENGTH_SHORT).show();
+
+
+        if (extras == null){
+
+        }else{
+            indice = extras.getString("indice");
+        }
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
@@ -73,15 +91,27 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 mMap.clear();
                 Latitud = Double.valueOf(dataSnapshot.child("Operarios").child("0").child("Latitud").getValue().toString());
                 Longitud = Double.valueOf(dataSnapshot.child("Operarios").child("0").child("Longitud").getValue().toString());
+
+
+                if(!dataSnapshot.child("Citas").exists()){
+                    Latitudcita = 0;
+                    Longitudcita = 0;
+                }else{
+                    Latitudcita = Double.valueOf(dataSnapshot.child("Citas").child(indice).child("latitud").getValue().toString());
+                    Longitudcita = Double.valueOf(dataSnapshot.child("Citas").child(indice).child("longitud").getValue().toString());
+                    hora = dataSnapshot.child("Citas").child(indice).child("hora").getValue().toString();
+                }
+
                 nombre = dataSnapshot.child("Operarios").child("0").child("Nombre").getValue().toString();
+
 
                 LatLng operario2 = new LatLng(Latitud, Longitud);
                 mMap.addMarker(new MarkerOptions().position(operario2).anchor(0.5f, 0.5f).title("Operario").snippet(nombre).icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_directions_bike_black_48dp)));
                 mMap.moveCamera(CameraUpdateFactory.newLatLng(operario2));
 
-                LatLng ubicacionCita = new LatLng(6.269277, -75.565516);
-                mMap.addMarker(new MarkerOptions().position(ubicacionCita).title("Cita").snippet("Mi carro - 12:30").icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_directions_car_black_48dp)));
-                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(ubicacionCita,15));
+                LatLng prueba = new LatLng(Latitudcita, Longitudcita);
+                mMap.addMarker(new MarkerOptions().position(prueba).title("Cita").snippet("Mi carro - "+hora).icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_directions_car_black_48dp)));
+                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(prueba,15));
 
             }
 
@@ -90,6 +120,13 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
             }
         });
+
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        finish();
 
     }
 }

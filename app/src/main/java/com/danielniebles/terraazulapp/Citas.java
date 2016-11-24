@@ -12,15 +12,17 @@ public class Citas {
     private String UID;
     private double latitud;
     private double longitud;
+    private String direccion;
     private String FIREBASE_URL="https://terraazul-cd8d8.firebaseio.com/";
     private Firebase firebasedata;
 
-    public Citas(String fecha, String hora, double latitud, double longitud, String UID) {
+    public Citas(String fecha, String hora, double latitud, double longitud, String UID, String direccion) {
         this.fecha = fecha;
         this.hora = hora;
         this.latitud = latitud;
         this.longitud = longitud;
         this.UID = UID;
+        this.direccion = direccion;
     }
     public String getFecha() {
         return fecha;
@@ -51,5 +53,13 @@ public class Citas {
     }
     public void setUID(String usuario) {
         this.UID = usuario;
+    }
+
+    public String getDireccion() {
+        return direccion;
+    }
+
+    public void setDireccion(String direccion) {
+        this.direccion = direccion;
     }
 }
